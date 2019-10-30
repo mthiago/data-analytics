@@ -16,6 +16,11 @@ import java.util.List;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import br.com.analisedados.view.model.ClienteModel;
+import br.com.analisedados.view.model.VendaModel;
+import br.com.analisedados.view.model.VendedorModel;
+import br.com.analisedados.view.model.ItemVendaModel;
+
 @SpringBootApplication
 public class AnaliseDadosApplication {
 
@@ -65,9 +70,9 @@ public class AnaliseDadosApplication {
 					FileReader("C:/temp/dados.txt"));
 		}
 		String linha;
-		List<DadosClienteModel> clientes = new ArrayList<>();
-		List<DadosVendedorModel> vendedores = new ArrayList<>();
-		List<DadosVendaModel> vendas = new ArrayList<>();
+		List<ClienteModel> clientes = new ArrayList<>();
+		List<VendedorModel> vendedores = new ArrayList<>();
+		List<VendaModel> vendas = new ArrayList<>();
 		while ((linha = br.readLine()) != null) {
 			if (linha.startsWith("001")) {
 				criaDadosVendedor(linha, vendedores);
@@ -82,7 +87,7 @@ public class AnaliseDadosApplication {
 
 		Integer idVendaMaisCara = 1;
 		Double valorVendaMaisCara = 1.0;
-		for (DadosVendaModel v : vendas) {
+		for (VendaModel v : vendas) {
 			for (ItemVendaModel i : v.getItemVendaModel()) {
 				if (Double.compare(Double.valueOf(i.getItemPrice()), valorVendaMaisCara) == 1) {
 					valorVendaMaisCara = Double.valueOf(i.getItemPrice());
@@ -93,7 +98,7 @@ public class AnaliseDadosApplication {
 
 		String nomePiorVendedor = "";
 		Integer quantidadeVendasPiorVendedor = null;
-		for (DadosVendedorModel v : vendedores) {
+		for (VendedorModel v : vendedores) {
 			if (quantidadeVendasPiorVendedor == null) {
 				quantidadeVendasPiorVendedor = v.getQuantidadeVenda();
 				nomePiorVendedor = v.getName();
@@ -114,8 +119,8 @@ public class AnaliseDadosApplication {
 
 	}
 
-	private static void criaDadosVenda(String linha, List<DadosVendaModel> vendas, List<DadosVendedorModel> vendedores) {
-		DadosVendaModel model = new DadosVendaModel();
+	private static void criaDadosVenda(String linha, List<VendaModel> vendas, List<VendedorModel> vendedores) {
+		VendaModel model = new VendaModel();
 		String[] textoSeparado = linha.split("ç");
 		model.setSaleId(Integer.valueOf(textoSeparado[1]));
 		String item = textoSeparado[2];
@@ -138,7 +143,7 @@ public class AnaliseDadosApplication {
 		model.setItemVendaModel(itens);
 		model.setNomeVendedor(textoSeparado[3]);
 
-		for (DadosVendedorModel v : vendedores) {
+		for (VendedorModel v : vendedores) {
 			if (v.getName().equals(textoSeparado[3])) {
 				Integer quantidadeVenda = v.getQuantidadeVenda();
 				if (quantidadeVenda == null) quantidadeVenda = 0;
@@ -149,8 +154,8 @@ public class AnaliseDadosApplication {
 		vendas.add(model);	
 	}
 
-	private static void criaDadosCliente(String linha, List<DadosClienteModel> clientes) {
-		DadosClienteModel model = new DadosClienteModel();
+	private static void criaDadosCliente(String linha, List<ClienteModel> clientes) {
+		ClienteModel model = new ClienteModel();
 		String[] textoSeparado = linha.split("ç");
 		model.setCnpj(Long.valueOf(textoSeparado[1]));
 		model.setName(textoSeparado[2]);
@@ -158,8 +163,8 @@ public class AnaliseDadosApplication {
 		clientes.add(model);	
 	}
 
-	private static void criaDadosVendedor(String linha, List<DadosVendedorModel> vendedores) {
-		DadosVendedorModel model = new DadosVendedorModel();
+	private static void criaDadosVendedor(String linha, List<VendedorModel> vendedores) {
+		VendedorModel model = new VendedorModel();
 		String[] textoSeparado = linha.split("ç");
 		model.setCpf(Long.valueOf(textoSeparado[1]));
 		model.setName(textoSeparado[2]);
