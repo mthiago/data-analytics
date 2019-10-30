@@ -1,7 +1,16 @@
 package br.com.analisedados;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +20,47 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AnaliseDadosApplication {
 
 	public static void main(String[] args) {
+		
 		try {
-		   BufferedReader br = new BufferedReader(new		 
+		verificaDados(null);
+		
+		
+        WatchService watchService
+        = FileSystems.getDefault().newWatchService();
+
+      Path path = Paths.get("C:/temp");
+
+      path.register(
+        watchService, 
+          StandardWatchEventKinds.ENTRY_CREATE,  
+              StandardWatchEventKinds.ENTRY_MODIFY);
+
+      WatchKey key;
+      while ((key = watchService.take()) != null) {
+          for (WatchEvent<?> event : key.pollEvents()) {
+              verificaDados(event.context().toString());
+          }
+          key.reset();
+      }
+		
+		
+		
+					
+	} catch (Exception e) {
+		
+	}
+		
+}
+
+	private static void verificaDados(String string) throws IOException {
+		BufferedReader br = null;
+		if (string != null) {
+			br = new BufferedReader(new		 
+					   FileReader("C:/temp/" + string));	
+		} else {
+		   br = new BufferedReader(new		 
 				   FileReader("C:/temp/dados.txt"));
+		}
 		   String linha;
 		   List<DadosClienteModel> clientes = new ArrayList();
 		   List<DadosVendedorModel> vendedores = new ArrayList();
@@ -61,12 +108,8 @@ public class AnaliseDadosApplication {
 		   
 
 		   br.close();
-					
-	} catch (Exception e) {
 		
 	}
-		
-}
 
 	private static void criaDadosVenda(String linha, List<DadosVendaModel> vendas, List<DadosVendedorModel> vendedores) {
 		DadosVendaModel model = new DadosVendaModel();
