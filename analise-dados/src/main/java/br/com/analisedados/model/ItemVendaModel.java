@@ -1,4 +1,4 @@
-package br.com.analisedados.view.model;
+package br.com.analisedados.model;
 
 public class ItemVendaModel {
 	

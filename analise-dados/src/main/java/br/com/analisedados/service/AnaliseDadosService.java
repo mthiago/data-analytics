@@ -1,4 +1,4 @@
-package br.com.analisedados;
+package br.com.analisedados.service;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,107 +16,56 @@ import java.util.List;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import br.com.analisedados.view.model.ClienteModel;
-import br.com.analisedados.view.model.VendaModel;
-import br.com.analisedados.view.model.VendedorModel;
-import br.com.analisedados.view.model.ItemVendaModel;
+import br.com.analisedados.controller.FileController;
+import br.com.analisedados.model.ClienteModel;
+import br.com.analisedados.model.ItemVendaModel;
+import br.com.analisedados.model.VendaModel;
+import br.com.analisedados.model.VendedorModel;
 
 @SpringBootApplication
-public class AnaliseDadosApplication {
+public class AnaliseDadosService {
 
 	public static void main(String[] args) {
-
 		try {
+			//Lista os arquivos de um diretório
+			ArrayList<String> arquivos = FileController.listarArquivos();
 			
-			File file = new File("C:/temp");
-			File afile[] = file.listFiles();
-			
-			for (int i=0; i < afile.length; i++) {
-				verificaDados(afile[i].toString());
+			//Verifica os dados de um arquivo
+			for (String arquivo : arquivos) {
+				List<String> dadosArquivo = FileController.verificarDadosArquivo(arquivo);	
+				
+				List<VendedorModel> vendedores = new ArrayList<>();
+				List<ClienteModel> clientes = new ArrayList<>();
+				List<VendaModel> vendas = new ArrayList<>();
+				consultaInfosVendaArquivo(dadosArquivo, vendedores, clientes, vendas);
+				
+				
+				FileController.montaRetorno(vendedores, clientes, vendas);
+				
 			}
 
-			
-			WatchService watchService
-			= FileSystems.getDefault().newWatchService();
-
-			Path path = Paths.get("C:/temp");
-
-			path.register(
-					watchService, 
-					StandardWatchEventKinds.ENTRY_CREATE,  
-					StandardWatchEventKinds.ENTRY_MODIFY);
-
-			WatchKey key;
-			while ((key = watchService.take()) != null) {
-				for (WatchEvent<?> event : key.pollEvents()) {
-					verificaDados(event.context().toString());
-				}
-				key.reset();
-			}
-
+			//Monitora um diretório em busca de criações/modificações
+			FileController.monitorarDiretorio();
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
 
 	}
 
-	private static void verificaDados(String string) throws IOException {
-		BufferedReader br = null;
-		if (string != null) {
-			br = new BufferedReader(new		 
-					FileReader("C:/temp/" + string));	
-		} else {
-			br = new BufferedReader(new		 
-					FileReader("C:/temp/dados.txt"));
-		}
-		String linha;
-		List<ClienteModel> clientes = new ArrayList<>();
-		List<VendedorModel> vendedores = new ArrayList<>();
-		List<VendaModel> vendas = new ArrayList<>();
-		while ((linha = br.readLine()) != null) {
-			if (linha.startsWith("001")) {
-				criaDadosVendedor(linha, vendedores);
+	private static void consultaInfosVendaArquivo(List<String> dadosArquivo, List<VendedorModel> vendedores, List<ClienteModel> clientes, List<VendaModel> vendas) {
+
+		for (String dados : dadosArquivo) {
+			if (dados.startsWith("001")) {
+				criaDadosVendedor(dados, vendedores);
 			}
-			else if (linha.startsWith("002")) {
-				criaDadosCliente(linha, clientes);
+			else if (dados.startsWith("002")) {
+				criaDadosCliente(dados, clientes);
 			}
-			else if (linha.startsWith("003")) {
-				criaDadosVenda(linha, vendas, vendedores);
+			else if (dados.startsWith("003")) {
+				criaDadosVenda(dados, vendas, vendedores);
 			}
 		}
-
-		Integer idVendaMaisCara = 1;
-		Double valorVendaMaisCara = 1.0;
-		for (VendaModel v : vendas) {
-			for (ItemVendaModel i : v.getItemVendaModel()) {
-				if (Double.compare(Double.valueOf(i.getItemPrice()), valorVendaMaisCara) == 1) {
-					valorVendaMaisCara = Double.valueOf(i.getItemPrice());
-					idVendaMaisCara = v.getSaleId();
-				}
-			}
-		}
-
-		String nomePiorVendedor = "";
-		Integer quantidadeVendasPiorVendedor = null;
-		for (VendedorModel v : vendedores) {
-			if (quantidadeVendasPiorVendedor == null) {
-				quantidadeVendasPiorVendedor = v.getQuantidadeVenda();
-				nomePiorVendedor = v.getName();
-			}
-			else if (quantidadeVendasPiorVendedor > v.getQuantidadeVenda()) {
-				nomePiorVendedor = v.getName();
-			}
-		}
-
-
-		System.out.println("Quantidade de clientes: " + clientes.size());
-		System.out.println("Quantidade de vendedores: " + vendedores.size());
-		System.out.println("Id venda mais cara: " + idVendaMaisCara.toString());
-		System.out.println("Pior vendedor: " + nomePiorVendedor);
-
-
-		br.close();
-
+		
 	}
 
 	private static void criaDadosVenda(String linha, List<VendaModel> vendas, List<VendedorModel> vendedores) {
