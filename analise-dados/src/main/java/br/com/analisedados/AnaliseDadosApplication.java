@@ -1,6 +1,7 @@
 package br.com.analisedados;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -21,7 +22,14 @@ public class AnaliseDadosApplication {
 	public static void main(String[] args) {
 
 		try {
-			verificaDados(null);
+			
+			File file = new File("C:/temp");
+			File afile[] = file.listFiles();
+			
+			for (int i=0; i < afile.length; i++) {
+				verificaDados(afile[i].toString());
+			}
+
 			
 			WatchService watchService
 			= FileSystems.getDefault().newWatchService();
