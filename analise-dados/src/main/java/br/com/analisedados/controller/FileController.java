@@ -22,7 +22,8 @@ import br.com.analisedados.model.VendedorModel;
 public class FileController {
 
 	public static ArrayList<String> listarArquivos() {
-		File file = new File("C:/temp");
+		String diretorioAtual = new File("").getAbsolutePath();
+		File file = new File(diretorioAtual + "/src/main/webapp/WEB-INF/arquivos");
 		File afile[] = file.listFiles();
 		ArrayList<String> arquivos = new ArrayList<>();
 		for (int i=0; i < afile.length; i++) {
