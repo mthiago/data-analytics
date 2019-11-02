@@ -31,6 +31,7 @@ public class AnaliseDadosService {
 
 				FileController.montaRetorno(vendedores, clientes, vendas);
 			}
+
 			//Monitora um diretório em busca de criações/modificações
 			FileController.monitorarDiretorio();
 		} catch (Exception e) {
@@ -40,7 +41,6 @@ public class AnaliseDadosService {
 	}
 
 	private static void consultaInfosVendaArquivo(List<String> dadosArquivo, List<VendedorModel> vendedores, List<ClienteModel> clientes, List<VendaModel> vendas) {
-
 		for (String dados : dadosArquivo) {
 			if (dados.startsWith(TipoDadosEnum.VENDEDOR.codigoDados())) {
 				criaDadosVendedor(dados, vendedores);
@@ -52,17 +52,13 @@ public class AnaliseDadosService {
 				criaDadosVenda(dados, vendas, vendedores);
 			}
 		}
-
 	}
 
 	private static void criaDadosVenda(String linha, List<VendaModel> vendas, List<VendedorModel> vendedores) {
 
 		String[] textoSeparado = linha.split("ç");
-
-		List<ItemVendaModel> itens = new ArrayList<>();
-		itens = buildItens(textoSeparado, itens);
-
-		buildItens(textoSeparado, itens);
+		String item = textoSeparado[2].replace("[", "").replace("]", "");
+		List<ItemVendaModel> itens = buildItens(item);
 
 		buildQuantidadeVenda(vendedores, textoSeparado);
 
@@ -72,31 +68,36 @@ public class AnaliseDadosService {
 	}
 
 	private static void buildQuantidadeVenda(List<VendedorModel> vendedores, String[] textoSeparado) {
-		for (VendedorModel v : vendedores) {
-			if (v.getNomeVendedor().equals(textoSeparado[3])) {
-				Integer quantidadeVenda = v.getQuantidadeVenda();
-				if (quantidadeVenda == null) quantidadeVenda = 0;
-				v.setQuantidadeVenda(quantidadeVenda+1);
-			}
-		}
+		String nomeVendedor = textoSeparado[3];
+		VendedorModel vendedor = vendedores.stream().filter(vend -> vend.getNomeVendedor().equals(nomeVendedor)).findFirst().get();
+		
+		Integer quantidadeVenda = vendedor.getQuantidadeVenda();
+		if (quantidadeVenda == null) quantidadeVenda = 0;
+		vendedor.setQuantidadeVenda(quantidadeVenda+1);
+
 	}
 
-	private static List<ItemVendaModel> buildItens(String[] textoSeparado, List<ItemVendaModel> itens) {
-		String item = textoSeparado[2].replace("[", "").replace("]", "");
+	private static List<ItemVendaModel> buildItens(String item) {
 		String[] itemFinal = item.split(",");
 		String item1 = itemFinal[0];
 		String item2 = itemFinal[1];
 		String item3 = itemFinal[2];
-		String[] dadosItem1 = item1.split("-");
-		ItemVendaModel itemVenda1 = new ItemVendaModel(dadosItem1[0], dadosItem1[1], dadosItem1[2]);
-		String[] dadosItem2 = item2.split("-");
-		ItemVendaModel itemVenda2 = new ItemVendaModel(dadosItem2[0], dadosItem2[1], dadosItem2[2]);
-		String[] dadosItem3 = item3.split("-");
-		ItemVendaModel itemVenda3 = new ItemVendaModel(dadosItem3[0], dadosItem3[1], dadosItem3[2]);
+		
+		ItemVendaModel itemVenda1 = separaItens(item1);
+		ItemVendaModel itemVenda2 = separaItens(item2);
+		ItemVendaModel itemVenda3 = separaItens(item3);
+
+		List<ItemVendaModel> itens = new ArrayList<>();
 		itens.add(itemVenda1);
 		itens.add(itemVenda2);
 		itens.add(itemVenda3);
 		return itens;
+	}
+
+	private static ItemVendaModel separaItens(String item) {
+		String[] dadosItem = item.split("-");
+		ItemVendaModel itemVenda = new ItemVendaModel(dadosItem[0], dadosItem[1], dadosItem[2]);
+		return itemVenda;
 	}
 
 	private static void criaDadosCliente(String linha, List<ClienteModel> clientes) {
