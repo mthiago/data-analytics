@@ -32,12 +32,13 @@ public class FileController {
 	}
 
 	public static List<String> verificarDadosArquivo(String arquivo) throws IOException {
-			BufferedReader br = new BufferedReader(new FileReader("C:/temp/" + arquivo));			
+			BufferedReader br = new BufferedReader(new FileReader(arquivo));			
 			String linha;
 			List<String> linhas = new ArrayList<>();
 			while ((linha = br.readLine()) != null) {
 				linhas.add(linha);
 			}
+			br.close();
 			return linhas;
 	}
 

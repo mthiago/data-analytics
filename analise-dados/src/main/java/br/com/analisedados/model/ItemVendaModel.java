@@ -2,7 +2,7 @@ package br.com.analisedados.model;
 
 public class ItemVendaModel {
 	
-	ItemVendaModel(String codigoItem, String quantidadeItem, String precoItem){
+	public ItemVendaModel(String codigoItem, String quantidadeItem, String precoItem){
 		this.codigoItem = codigoItem;
 		this.quantidadeItem = quantidadeItem;
 		this.precoItem = precoItem;
