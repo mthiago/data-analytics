@@ -1,5 +1,6 @@
 package br.com.analisedados.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,15 @@ public class VendaService {
 	
 	private static ItemVendaModel separaItens(String item) {
 		String[] dadosItem = item.split("-");
-		ItemVendaModel itemVenda = new ItemVendaModel(dadosItem[0], dadosItem[1], dadosItem[2]);
+		
+		Integer codigoItem = Integer.valueOf(dadosItem[0]);
+		Integer quantidadeItem = Integer.valueOf(dadosItem[1]);
+		BigDecimal precoItem = new BigDecimal(dadosItem[2]);
+		
+		ItemVendaModel itemVenda = new ItemVendaModel(
+													codigoItem != null ? codigoItem : 0,
+													quantidadeItem != null ? quantidadeItem : 0,
+													precoItem != null ? precoItem : new BigDecimal(0));
 		return itemVenda;
 	}
 	

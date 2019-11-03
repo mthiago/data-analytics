@@ -56,44 +56,4 @@ public class FileController {
 		}
 	}
 
-	public static void montaRetorno(List<VendedorModel> vendedores, List<ClienteModel> clientes, List<VendaModel> vendas) {
-		Integer idVendaMaisCara = verificaVendaMaisCara(vendas);
-		String nomePiorVendedor = verificaPiorVendedor(vendedores);
-		System.out.println("Quantidade de clientes: " + clientes.size());
-		System.out.println("Quantidade de vendedores: " + vendedores.size());
-		System.out.println("Id venda mais cara: " + idVendaMaisCara.toString());
-		System.out.println("Pior vendedor: " + nomePiorVendedor);
-	}
-
-	private static String verificaPiorVendedor(List<VendedorModel> vendedores) {
-		String nomePiorVendedor = "";
-		Integer quantidadeVendasPiorVendedor = null;
-		for (VendedorModel v : vendedores) {
-			if (quantidadeVendasPiorVendedor == null) {
-				quantidadeVendasPiorVendedor = v.getQuantidadeVenda();
-				nomePiorVendedor = v.getNomeVendedor();
-			}
-			else if (quantidadeVendasPiorVendedor > v.getQuantidadeVenda()) {
-				nomePiorVendedor = v.getNomeVendedor();
-			}
-		}
-		return nomePiorVendedor;
-	}
-
-	private static Integer verificaVendaMaisCara(List<VendaModel> vendas) {
-		Integer idVendaMaisCara = 1;
-		Double valorVendaMaisCara = 1.0;
-		for (VendaModel v : vendas) {
-			for (ItemVendaModel i : v.getItemVendaModel()) {
-				if (Double.compare(Double.valueOf(i.getPrecoItem()), valorVendaMaisCara) == 1) {
-					valorVendaMaisCara = Double.valueOf(i.getPrecoItem());
-					idVendaMaisCara = v.getCodigoVenda();
-				}
-			}
-		}
-		return idVendaMaisCara;
-	}
-
-
-
 }

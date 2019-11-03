@@ -1,8 +1,10 @@
 package br.com.analisedados.model;
 
+import java.math.BigDecimal;
+
 public class VendedorModel {
 
-	public VendedorModel(Long cpfVendedor, String nomeVendedor, String salarioVendedor, Integer quantidadeVenda) {
+	public VendedorModel(Long cpfVendedor, String nomeVendedor, BigDecimal salarioVendedor, Integer quantidadeVenda) {
 		this.cpfVendedor = cpfVendedor;
 		this.nomeVendedor = nomeVendedor;
 		this.salarioVendedor = salarioVendedor;
@@ -11,7 +13,7 @@ public class VendedorModel {
 
 	private Long cpfVendedor;
 	private String nomeVendedor;
-	private String salarioVendedor;
+	private BigDecimal salarioVendedor;
 	private Integer quantidadeVenda;
 
 	public Long getCpfVendedor() {
@@ -26,10 +28,10 @@ public class VendedorModel {
 	public void setNomeVendedor(String nomeVendedor) {
 		this.nomeVendedor = nomeVendedor;
 	}
-	public String getSalarioVendedor() {
+	public BigDecimal getSalarioVendedor() {
 		return salarioVendedor;
 	}
-	public void setSalarioVendedor(String salarioVendedor) {
+	public void setSalarioVendedor(BigDecimal salarioVendedor) {
 		this.salarioVendedor = salarioVendedor;
 	}
 	public Integer getQuantidadeVenda() {

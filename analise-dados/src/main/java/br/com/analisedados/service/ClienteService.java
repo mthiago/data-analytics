@@ -8,8 +8,16 @@ public class ClienteService {
 
 	public static void criaDadosCliente(String linha, List<ClienteModel> clientes) {
 		String[] textoSeparado = linha.split("ç");
-		ClienteModel model = new ClienteModel(Long.valueOf(textoSeparado[1]), textoSeparado[2], textoSeparado[3]);
+
+		Long cnpjCliente = Long.valueOf(textoSeparado[1]);
+		String nomeCliente = textoSeparado[2];
+		String areaCliente = textoSeparado[3];
+
+		ClienteModel model = new ClienteModel(
+											cnpjCliente != null ? cnpjCliente : 0,
+											nomeCliente != null ? nomeCliente : "",
+											areaCliente != null ? areaCliente : "");
 		clientes.add(model);	
 	}
-	
+
 }
