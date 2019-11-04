@@ -11,7 +11,7 @@ import br.com.analisedados.model.VendedorModel;
 public class VendaService {
 
 	public static void criaDadosVenda(String linha, List<VendaModel> vendas, List<VendedorModel> vendedores) {
-		String[] textoSeparado = linha.split("a");
+		String[] textoSeparado = linha.split("ç");
 		String item = textoSeparado[2].replace("[", "").replace("]", "");
 		List<ItemVendaModel> itens = buildItens(item);
 

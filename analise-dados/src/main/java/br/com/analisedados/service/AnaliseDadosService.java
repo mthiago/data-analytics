@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import br.com.analisedados.controller.FileController;
@@ -13,12 +15,18 @@ import br.com.analisedados.model.ItemVendaModel;
 import br.com.analisedados.model.VendaModel;
 import br.com.analisedados.model.VendedorModel;
 
+
 @SpringBootApplication
 public class AnaliseDadosService {
 
+	final static Logger logger = LogManager.getLogger(AnaliseDadosService.class);
+
 	public static void main(String[] args) {
+
 		try {
-			//Lista os arquivos de um diretório
+			
+			
+			//Lista os arquivos de um diretorio
 			ArrayList<String> listaArquivos = FileController.listarArquivos();
 
 			//Verifica os dados de um arquivo
@@ -28,8 +36,9 @@ public class AnaliseDadosService {
 				List<VendedorModel> vendedores = new ArrayList<>();
 				List<ClienteModel> clientes = new ArrayList<>();
 				List<VendaModel> vendas = new ArrayList<>();
-
+				
 				for (String dadosArquivo : listaDadosArquivo) {
+					
 					if (dadosArquivo.startsWith(TipoDadosEnum.VENDEDOR.codigoDados())) {
 						VendedorService.criaDadosVendedor(dadosArquivo, vendedores);
 					}
@@ -38,28 +47,24 @@ public class AnaliseDadosService {
 					}
 					else if (dadosArquivo.startsWith(TipoDadosEnum.VENDA.codigoDados())) {
 						VendaService.criaDadosVenda(dadosArquivo, vendas, vendedores);
-					}					
+					}
 				}
-				montaRetorno(vendedores, clientes, vendas);
+				Integer idVendaMaisCara = verificaVendaMaisCara(vendas);
+				String nomePiorVendedor = verificaPiorVendedor(vendedores);
+				logger.info("Quantidade de clientes: " + clientes.size());
+				logger.info("Quantidade de vendedores: " + vendedores.size());
+				logger.info("Id venda mais cara: " + idVendaMaisCara.toString());
+				logger.info("Pior vendedor: " + nomePiorVendedor);
 			}
 
-			//Monitora um diretório em busca de criações/modificações
+			//Monitora um diretorio em busca de criacoes/modificacoes
 			FileController.monitorarDiretorio();
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error(e.getCause());
 		}
 
 	}
 	
-	public static void montaRetorno(List<VendedorModel> vendedores, List<ClienteModel> clientes, List<VendaModel> vendas) {
-		Integer idVendaMaisCara = verificaVendaMaisCara(vendas);
-		String nomePiorVendedor = verificaPiorVendedor(vendedores);
-		System.out.println("Quantidade de clientes: " + clientes.size());
-		System.out.println("Quantidade de vendedores: " + vendedores.size());
-		System.out.println("Id venda mais cara: " + idVendaMaisCara.toString());
-		System.out.println("Pior vendedor: " + nomePiorVendedor);
-	}
-
 	private static String verificaPiorVendedor(List<VendedorModel> vendedores) {
 		String nomePiorVendedor = "";
 		Integer quantidadeVendasPiorVendedor = null;
@@ -80,8 +85,8 @@ public class AnaliseDadosService {
 		BigDecimal valorVendaMaisCara = new BigDecimal(1.0);
 		for (VendaModel v : vendas) {
 			for (ItemVendaModel i : v.getItemVendaModel()) {
-				if (BigDecimal.compareTo(i.getPrecoItem(), valorVendaMaisCara) == 1) {
-					valorVendaMaisCara = Double.valueOf(i.getPrecoItem());
+				if (i.getPrecoItem().compareTo(valorVendaMaisCara) == 1) {
+					valorVendaMaisCara = i.getPrecoItem();
 					idVendaMaisCara = v.getCodigoVenda();
 				}
 			}
