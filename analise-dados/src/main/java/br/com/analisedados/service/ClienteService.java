@@ -7,7 +7,7 @@ import br.com.analisedados.model.ClienteModel;
 public class ClienteService {
 
 	public static void criaDadosCliente(String linha, List<ClienteModel> clientes) {
-		String[] textoSeparado = linha.split("ç");
+		String[] textoSeparado = linha.split("a");
 
 		Long cnpjCliente = Long.valueOf(textoSeparado[1]);
 		String nomeCliente = textoSeparado[2];

@@ -8,7 +8,7 @@ import br.com.analisedados.model.VendedorModel;
 public class VendedorService {
 
 	public static void criaDadosVendedor(String linha, List<VendedorModel> vendedores) {
-		String[] textoSeparado = linha.split("ç");
+		String[] textoSeparado = linha.split("a");
 
 		Long cpfVendedor = Long.valueOf(textoSeparado[1]);
 		String nomeVendedor = textoSeparado[2];
