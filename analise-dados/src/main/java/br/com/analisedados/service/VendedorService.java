@@ -12,11 +12,12 @@ public class VendedorService {
 	final static Logger logger = LogManager.getLogger(AnaliseDadosService.class);
 	public static void criaDadosVendedor(String linha, List<VendedorModel> vendedores) {
 
-		String[] textoSeparado = linha.split("ç");
+		//String[] linhaSeparada = linha.split("ç");
+		String[] linhaSeparada = linha.split("�");
 
-		Long cpfVendedor = Long.valueOf(textoSeparado[1]);
-		String nomeVendedor = textoSeparado[2];
-		BigDecimal salarioVendedor = new BigDecimal(textoSeparado[3]);
+		Long cpfVendedor = Long.valueOf(linhaSeparada[1]);
+		String nomeVendedor = linhaSeparada[2];
+		BigDecimal salarioVendedor = new BigDecimal(linhaSeparada[3]);
 		
 		VendedorModel model = new VendedorModel(
 												cpfVendedor != null ? cpfVendedor : 0,

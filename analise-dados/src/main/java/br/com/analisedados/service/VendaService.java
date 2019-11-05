@@ -11,17 +11,20 @@ import br.com.analisedados.model.VendedorModel;
 public class VendaService {
 
 	public static void criaDadosVenda(String linha, List<VendaModel> vendas, List<VendedorModel> vendedores) {
-		String[] textoSeparado = linha.split("ç");
-		String item = textoSeparado[2].replace("[", "").replace("]", "");
-		List<ItemVendaModel> itens = buildItens(item);
 
-		buildQuantidadeVenda(vendedores, textoSeparado);
+		//String[] linhaSeparada = linha.split("ç");
+		String[] linhaSeparada = linha.split("�");
+		
+		String item = linhaSeparada[2].replace("[", "").replace("]", "");
+		List<ItemVendaModel> itens = montaListaItemVenda(item);
 
-		VendaModel model = new VendaModel(Integer.valueOf(textoSeparado[1]), itens, textoSeparado[3]);
+		montaQuantidadeVenda(vendedores, linhaSeparada);
+
+		VendaModel model = new VendaModel(Integer.valueOf(linhaSeparada[1]), itens, linhaSeparada[3]);
 		vendas.add(model);	
 	}
 	
-	private static void buildQuantidadeVenda(List<VendedorModel> vendedores, String[] textoSeparado) {
+	private static void montaQuantidadeVenda(List<VendedorModel> vendedores, String[] textoSeparado) {
 		String nomeVendedor = textoSeparado[3];
 		VendedorModel vendedor = vendedores.stream().filter(vend -> vend.getNomeVendedor().equals(nomeVendedor)).findFirst().get();
 		
@@ -30,11 +33,11 @@ public class VendaService {
 		vendedor.setQuantidadeVenda(quantidadeVenda+1);
 	}
 
-	private static List<ItemVendaModel> buildItens(String item) {
-		String[] itemFinal = item.split(",");
-		String item1 = itemFinal[0];
-		String item2 = itemFinal[1];
-		String item3 = itemFinal[2];
+	private static List<ItemVendaModel> montaListaItemVenda(String item) {
+		String[] itemCompleto = item.split(",");
+		String item1 = itemCompleto[0];
+		String item2 = itemCompleto[1];
+		String item3 = itemCompleto[2];
 		
 		ItemVendaModel itemVenda1 = separaItens(item1);
 		ItemVendaModel itemVenda2 = separaItens(item2);

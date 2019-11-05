@@ -1,5 +1,7 @@
 package br.com.analisedados.service;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,46 +17,22 @@ import br.com.analisedados.model.ItemVendaModel;
 import br.com.analisedados.model.VendaModel;
 import br.com.analisedados.model.VendedorModel;
 
-
 @SpringBootApplication
 public class AnaliseDadosService {
 
 	final static Logger logger = LogManager.getLogger(AnaliseDadosService.class);
 
 	public static void main(String[] args) {
-
 		try {
-			
-			
+
 			//Lista os arquivos de um diretorio
 			ArrayList<String> listaArquivos = FileController.listarArquivos();
 
-			//Verifica os dados de um arquivo
-			for (String arquivo : listaArquivos) {
-				List<String> listaDadosArquivo = FileController.verificarDadosArquivo(arquivo);	
-
-				List<VendedorModel> vendedores = new ArrayList<>();
-				List<ClienteModel> clientes = new ArrayList<>();
-				List<VendaModel> vendas = new ArrayList<>();
-				
-				for (String dadosArquivo : listaDadosArquivo) {
-					
-					if (dadosArquivo.startsWith(TipoDadosEnum.VENDEDOR.codigoDados())) {
-						VendedorService.criaDadosVendedor(dadosArquivo, vendedores);
-					}
-					else if (dadosArquivo.startsWith(TipoDadosEnum.CLIENTE.codigoDados())) {
-						ClienteService.criaDadosCliente(dadosArquivo, clientes);
-					}
-					else if (dadosArquivo.startsWith(TipoDadosEnum.VENDA.codigoDados())) {
-						VendaService.criaDadosVenda(dadosArquivo, vendas, vendedores);
-					}
+			if (listaArquivos != null && listaArquivos.size() > 0) {
+				//Verifica os dados de um arquivo
+				for (String arquivo : listaArquivos) {
+					criarDados(arquivo);
 				}
-				Integer idVendaMaisCara = verificaVendaMaisCara(vendas);
-				String nomePiorVendedor = verificaPiorVendedor(vendedores);
-				logger.info("Quantidade de clientes: " + clientes.size());
-				logger.info("Quantidade de vendedores: " + vendedores.size());
-				logger.info("Id venda mais cara: " + idVendaMaisCara.toString());
-				logger.info("Pior vendedor: " + nomePiorVendedor);
 			}
 
 			//Monitora um diretorio em busca de criacoes/modificacoes
@@ -64,7 +42,35 @@ public class AnaliseDadosService {
 		}
 
 	}
-	
+
+	public static void criarDados(String arquivo) throws IOException {
+		List<String> listaDadosArquivo = FileController.verificarDadosArquivo(arquivo);
+		
+		List<VendedorModel> vendedores = new ArrayList<>();
+		List<ClienteModel> clientes = new ArrayList<>();
+		List<VendaModel> vendas = new ArrayList<>();
+
+		for (String dadosArquivo : listaDadosArquivo) {
+
+			if (dadosArquivo.startsWith(TipoDadosEnum.VENDEDOR.codigoDados())) {
+				VendedorService.criaDadosVendedor(dadosArquivo, vendedores);
+			}
+			else if (dadosArquivo.startsWith(TipoDadosEnum.CLIENTE.codigoDados())) {
+				ClienteService.criaDadosCliente(dadosArquivo, clientes);
+			}
+			else if (dadosArquivo.startsWith(TipoDadosEnum.VENDA.codigoDados())) {
+				VendaService.criaDadosVenda(dadosArquivo, vendas, vendedores);
+			}
+		}
+
+		Integer idVendaMaisCara = verificaVendaMaisCara(vendas);
+		String nomePiorVendedor = verificaPiorVendedor(vendedores);
+		logger.info("Quantidade de clientes: " + clientes.size());
+		logger.info("Quantidade de vendedores: " + vendedores.size());
+		logger.info("ID da venda mais cara: " + idVendaMaisCara.toString());
+		logger.info("Pior vendedor: " + nomePiorVendedor);
+	}
+
 	private static String verificaPiorVendedor(List<VendedorModel> vendedores) {
 		String nomePiorVendedor = "";
 		Integer quantidadeVendasPiorVendedor = null;

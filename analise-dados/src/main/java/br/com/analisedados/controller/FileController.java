@@ -18,6 +18,7 @@ import br.com.analisedados.model.ClienteModel;
 import br.com.analisedados.model.ItemVendaModel;
 import br.com.analisedados.model.VendaModel;
 import br.com.analisedados.model.VendedorModel;
+import br.com.analisedados.service.AnaliseDadosService;
 
 public class FileController {
 
@@ -45,12 +46,14 @@ public class FileController {
 
 	public static void monitorarDiretorio() throws IOException, InterruptedException {
 		WatchService watchService = FileSystems.getDefault().newWatchService();
-		Path path = Paths.get("C:/temp");
+		String diretorioAtual = new File("").getAbsolutePath();
+		Path path = Paths.get(diretorioAtual + "/src/main/webapp/WEB-INF/arquivos");
 		path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
 		WatchKey key;
 		while ((key = watchService.take()) != null) {
 			for (WatchEvent<?> event : key.pollEvents()) {
-				verificarDadosArquivo(event.context().toString());
+				String arquivo = diretorioAtual + "/src/main/webapp/WEB-INF/arquivos/" + event.context().toString();
+				AnaliseDadosService.criarDados(arquivo);
 			}
 			key.reset();
 		}

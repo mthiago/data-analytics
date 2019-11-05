@@ -8,12 +8,13 @@ import br.com.analisedados.model.ClienteModel;
 public class ClienteService {
 
 	public static void criaDadosCliente(String linha, List<ClienteModel> clientes) throws UnsupportedEncodingException {
-		System.setProperty("file.encoding", "UTF-8");
-		String[] textoSeparado = linha.split("ç");
+		
+		//String[] linhaSeparada = linha.split("ç");
+		String[] linhaSeparada = linha.split("�");
 
-		Long cnpjCliente = Long.valueOf(textoSeparado[1]);
-		String nomeCliente = textoSeparado[2];
-		String areaCliente = textoSeparado[3];
+		Long cnpjCliente = Long.valueOf(linhaSeparada[1]);
+		String nomeCliente = linhaSeparada[2];
+		String areaCliente = linhaSeparada[3];
 
 		ClienteModel model = new ClienteModel(
 											cnpjCliente != null ? cnpjCliente : 0,
