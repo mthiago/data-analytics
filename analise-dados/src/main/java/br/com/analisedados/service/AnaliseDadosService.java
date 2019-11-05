@@ -74,13 +74,13 @@ public class AnaliseDadosService {
 	private static String verificaPiorVendedor(List<VendedorModel> vendedores) {
 		String nomePiorVendedor = "";
 		Integer quantidadeVendasPiorVendedor = null;
-		for (VendedorModel v : vendedores) {
+		for (VendedorModel vendedor : vendedores) {
 			if (quantidadeVendasPiorVendedor == null) {
-				quantidadeVendasPiorVendedor = v.getQuantidadeVenda();
-				nomePiorVendedor = v.getNomeVendedor();
+				quantidadeVendasPiorVendedor = vendedor.getQuantidadeVenda();
+				nomePiorVendedor = vendedor.getNomeVendedor();
 			}
-			else if (quantidadeVendasPiorVendedor > v.getQuantidadeVenda()) {
-				nomePiorVendedor = v.getNomeVendedor();
+			else if (quantidadeVendasPiorVendedor > vendedor.getQuantidadeVenda()) {
+				nomePiorVendedor = vendedor.getNomeVendedor();
 			}
 		}
 		return nomePiorVendedor;
@@ -89,11 +89,11 @@ public class AnaliseDadosService {
 	private static Integer verificaVendaMaisCara(List<VendaModel> vendas) {
 		Integer idVendaMaisCara = 1;
 		BigDecimal valorVendaMaisCara = new BigDecimal(1.0);
-		for (VendaModel v : vendas) {
-			for (ItemVendaModel i : v.getItemVendaModel()) {
-				if (i.getPrecoItem().compareTo(valorVendaMaisCara) == 1) {
-					valorVendaMaisCara = i.getPrecoItem();
-					idVendaMaisCara = v.getCodigoVenda();
+		for (VendaModel venda : vendas) {
+			for (ItemVendaModel item : venda.getItemVendaModel()) {
+				if (item.getPrecoItem().compareTo(valorVendaMaisCara) == 1) {
+					valorVendaMaisCara = item.getPrecoItem();
+					idVendaMaisCara = venda.getCodigoVenda();
 				}
 			}
 		}
