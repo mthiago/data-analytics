@@ -12,8 +12,7 @@ public class VendaService {
 
 	public static void criaDadosVenda(String linha, List<VendaModel> vendas, List<VendedorModel> vendedores) {
 
-		//String[] linhaSeparada = linha.split("ç");
-		String[] linhaSeparada = linha.split("�");
+		String[] linhaSeparada = linha.split("ç");
 		
 		String item = linhaSeparada[2].replace("[", "").replace("]", "");
 		List<ItemVendaModel> itens = montaListaItemVenda(item);

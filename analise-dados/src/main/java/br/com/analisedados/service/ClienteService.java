@@ -9,8 +9,7 @@ public class ClienteService {
 
 	public static void criaDadosCliente(String linha, List<ClienteModel> clientes) throws UnsupportedEncodingException {
 		
-		//String[] linhaSeparada = linha.split("ç");
-		String[] linhaSeparada = linha.split("�");
+		String[] linhaSeparada = linha.split("ç");
 
 		Long cnpjCliente = Long.valueOf(linhaSeparada[1]);
 		String nomeCliente = linhaSeparada[2];

@@ -12,9 +12,8 @@ public class VendedorService {
 	final static Logger logger = LogManager.getLogger(AnaliseDadosService.class);
 	public static void criaDadosVendedor(String linha, List<VendedorModel> vendedores) {
 
-		//String[] linhaSeparada = linha.split("ç");
-		String[] linhaSeparada = linha.split("�");
-
+		String[] linhaSeparada = linha.split("ç");
+		
 		Long cpfVendedor = Long.valueOf(linhaSeparada[1]);
 		String nomeVendedor = linhaSeparada[2];
 		BigDecimal salarioVendedor = new BigDecimal(linhaSeparada[3]);
